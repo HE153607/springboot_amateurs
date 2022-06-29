@@ -1,5 +1,6 @@
 package com.boot.springboot.controller;
 
+import com.boot.springboot.mapper.StudentMapper;
 import com.boot.springboot.model.Class;
 import com.boot.springboot.repo.ClassRepository;
 import com.boot.springboot.repo.UserRespository;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @PropertySource("classpath:application.properties")
@@ -51,7 +53,10 @@ public class UserController {
         c.setStudents(set);
         s.setaClass(c);
         classRepository.save(c);
-        return ResponseEntity.ok().body(classRepository.findAll());
+        List<Student> students = userRespository.findAll();
+        return ResponseEntity.ok().body(students.stream()
+                .map(StudentMapper::toStudentResponse)
+                .collect(Collectors.toList()));
     }
     @Value("${spring.datasource.username}")
     String user ;
